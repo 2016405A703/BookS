@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50096
 File Encoding         : 65001
 
-Date: 2018-09-12 16:09:45
+Date: 2018-09-14 16:44:37
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -135,37 +135,14 @@ CREATE TABLE `evaluation` (
   KEY `username` (`username`),
   CONSTRAINT `evaluation_ibfk_1` FOREIGN KEY (`productID`) REFERENCES `product` (`productID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `evaluation_ibfk_2` FOREIGN KEY (`username`) REFERENCES `user` (`userName`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of evaluation
 -- ----------------------------
 INSERT INTO `evaluation` VALUES ('1', '1', '123456', '还不错', '2018-08-01 10:01:20');
-
--- ----------------------------
--- Table structure for `order`
--- ----------------------------
-DROP TABLE IF EXISTS `order`;
-CREATE TABLE `order` (
-  `orderID` int(11) NOT NULL auto_increment COMMENT '订单编号',
-  `userName` varchar(16) NOT NULL COMMENT '用户名',
-  `adressName` varchar(255) NOT NULL COMMENT '地址名称',
-  `placeTime` datetime NOT NULL COMMENT '下单时间',
-  `payTime` datetime default NULL COMMENT '支付时间',
-  `deliveryTime` datetime default NULL COMMENT '发货时间',
-  `accessTime` datetime default NULL COMMENT '确认收货时间',
-  `orderState` int(11) NOT NULL COMMENT '订单状态 0 未支付 1 支付成功未发货 2 发货未收货 3 交易成功 4 未支付取消订单 5 退款 6 未发货取消订单 7 发货状态取消订单 8 收到货退货退款',
-  `consigneerPhone` char(11) NOT NULL COMMENT '收件人电话',
-  `consigneeName` varchar(20) NOT NULL COMMENT '收件人姓名',
-  PRIMARY KEY  (`orderID`),
-  KEY `userName` (`userName`),
-  KEY `adressID` (`adressName`),
-  CONSTRAINT `order_ibfk_1` FOREIGN KEY (`userName`) REFERENCES `user` (`userName`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of order
--- ----------------------------
+INSERT INTO `evaluation` VALUES ('2', '2', '1234567', '纸张质量不错', '2018-09-14 11:18:25');
+INSERT INTO `evaluation` VALUES ('3', '3', '1234567', '收到了，宝贝不错', '2018-09-14 13:58:22');
 
 -- ----------------------------
 -- Table structure for `order-product`
@@ -180,11 +157,36 @@ CREATE TABLE `order-product` (
   KEY `productID` (`productID`),
   KEY `orderID` (`orderID`),
   CONSTRAINT `order-product_ibfk_1` FOREIGN KEY (`productID`) REFERENCES `product` (`productID`) ON UPDATE CASCADE,
-  CONSTRAINT `order-product_ibfk_2` FOREIGN KEY (`orderID`) REFERENCES `order` (`orderID`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `order-product_ibfk_2` FOREIGN KEY (`orderID`) REFERENCES `orders` (`orderID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of order-product
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `orders`
+-- ----------------------------
+DROP TABLE IF EXISTS `orders`;
+CREATE TABLE `orders` (
+  `orderID` int(11) NOT NULL auto_increment COMMENT '订单编号',
+  `userName` varchar(16) NOT NULL COMMENT '用户名',
+  `adressName` varchar(255) NOT NULL COMMENT '地址名称',
+  `placeTime` datetime NOT NULL COMMENT '下单时间',
+  `payTime` datetime default NULL COMMENT '支付时间',
+  `deliveryTime` datetime default NULL COMMENT '发货时间',
+  `accessTime` datetime default NULL COMMENT '确认收货时间',
+  `orderState` int(11) NOT NULL COMMENT '订单状态 0 未支付 1 支付成功未发货 2 发货未收货 3 交易成功 4 未支付取消订单 5 退款 6 未发货取消订单 7 发货状态取消订单 8 收到货退货退款',
+  `consigneerPhone` char(11) NOT NULL COMMENT '收件人电话',
+  `consigneeName` varchar(20) NOT NULL COMMENT '收件人姓名',
+  PRIMARY KEY  (`orderID`),
+  KEY `userName` (`userName`),
+  KEY `adressID` (`adressName`),
+  CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`userName`) REFERENCES `user` (`userName`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of orders
 -- ----------------------------
 
 -- ----------------------------
@@ -193,7 +195,7 @@ CREATE TABLE `order-product` (
 DROP TABLE IF EXISTS `product`;
 CREATE TABLE `product` (
   `productID` int(11) NOT NULL auto_increment COMMENT '商品id',
-  `prooductName` varchar(255) NOT NULL COMMENT '商品名称',
+  `productName` varchar(255) NOT NULL COMMENT '商品名称',
   `productPrice` double NOT NULL COMMENT '商品价格',
   `productStock` int(11) NOT NULL COMMENT '商品库存',
   `productAdress` varchar(255) NOT NULL COMMENT '商品地址',
@@ -314,15 +316,25 @@ CREATE TABLE `product_picture` (
   `product_pictureID` int(11) NOT NULL auto_increment COMMENT '商品图片id',
   `productID` int(11) NOT NULL COMMENT '商品id',
   `pictureAdress` varchar(255) NOT NULL COMMENT '图片保存路径',
-  `pictureAttrabute` int(11) NOT NULL COMMENT '图片属性 0 默认图片 1 详情图片',
+  `pictureAttrabute` varchar(255) default NULL COMMENT '图片属性 0 默认图片 1 详情图片',
   PRIMARY KEY  (`product_pictureID`),
   KEY `productID` (`productID`),
   CONSTRAINT `product_picture_ibfk_1` FOREIGN KEY (`productID`) REFERENCES `product` (`productID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of product_picture
 -- ----------------------------
+INSERT INTO `product_picture` VALUES ('2', '1', 'E:\\eclipse\\workplace\\Book\\WebContent\\images\\3-2-1.jpg', '1');
+INSERT INTO `product_picture` VALUES ('3', '1', 'E:\\eclipse\\workplace\\Book\\WebContent\\images\\3-2-3.jpg', '1');
+INSERT INTO `product_picture` VALUES ('4', '2', 'E:\\eclipse\\workplace\\Book\\WebContent\\images\\3-3-1.jpg', '0');
+INSERT INTO `product_picture` VALUES ('5', '2', 'E:\\eclipse\\workplace\\Book\\WebContent\\images\\3-3-2.jpg', '1');
+INSERT INTO `product_picture` VALUES ('6', '3', 'E:\\eclipse\\workplace\\Book\\WebContent\\images\\3-5-1.jpg', '0');
+INSERT INTO `product_picture` VALUES ('7', '4', 'E:\\eclipse\\workplace\\Book\\WebContent\\images\\3-1-1.jpg', '0');
+INSERT INTO `product_picture` VALUES ('8', '1', 'E:\\eclipse\\workplace\\Book\\WebContent\\images\\3-2-1.jpg', '0');
+INSERT INTO `product_picture` VALUES ('9', '3', 'E:\\images\\8-6-1.jpg', '1');
+INSERT INTO `product_picture` VALUES ('10', '4', 'E:\\images\\3-3-1.jpg', '1');
+INSERT INTO `product_picture` VALUES ('11', '4', 'E:\\images\\3-3-2.jpg', '0');
 
 -- ----------------------------
 -- Table structure for `role`
@@ -372,11 +384,15 @@ CREATE TABLE `shopcar` (
   KEY `productID` (`productID`),
   CONSTRAINT `shopcar_ibfk_1` FOREIGN KEY (`userName`) REFERENCES `user` (`userName`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `shopcar_ibfk_2` FOREIGN KEY (`productID`) REFERENCES `product` (`productID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of shopcar
 -- ----------------------------
+INSERT INTO `shopcar` VALUES ('1', '123456', '1', '15', '32');
+INSERT INTO `shopcar` VALUES ('2', '123456', '2', '13', '35');
+INSERT INTO `shopcar` VALUES ('3', '123456', '3', '5', '50');
+INSERT INTO `shopcar` VALUES ('4', '123456', '4', '1', '30');
 
 -- ----------------------------
 -- Table structure for `user`
